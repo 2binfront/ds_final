@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <stack>
+#include <Windows.h>
 #include"graph.h"
 
 using namespace std;
@@ -86,10 +87,10 @@ void Creat_graph()
 	Creat_arcs();
 }
 
-int main()
+void print_admin()
 {
+	system("cls"); //清屏 
 	int choose;
-	Creat_graph();
 	while (1)
 	{
 		cout << "           &欢迎使用公交查询系统&           " << endl;
@@ -124,7 +125,7 @@ int main()
 		case 5:modify_vex(); break;
 		case 6:add_line(); break;
 		case 7:modify_adj(); break;
-		case 8:direct_path();break;
+		case 8:direct_path(); break;
 		case 9:
 		{
 			cout << "退出程序"; exit(1);
@@ -133,6 +134,82 @@ int main()
 		}
 		system("pause");//程序暂停 
 		system("cls"); //清屏 
+	}
+}
+
+void print_user() 
+{
+	int choose;
+	while (1)
+	{
+		system("cls"); //清屏 
+		cout << "           &欢迎使用公交查询系统&           " << endl;
+		cout << "********************************************" << endl;
+		cout << "*            1.显示所有站点信息            *" << endl;
+		cout << "*------------------------------------------*" << endl;
+		cout << "*        2.显示站点之间的公交路线号        *" << endl;
+		cout << "*------------------------------------------*" << endl;
+		cout << "*           3.搜索两站之间的路线           *" << endl;
+		cout << "*------------------------------------------*" << endl;
+		cout << "*                4.退出程序                *" << endl;
+		cout << "*------------------------------------------*" << endl;
+		cout << "*                  请选择                  *" << endl;
+		cout << "********************************************" << endl;
+		cin >> choose;
+		switch (choose)
+		{
+		case 1:print_vex(); break;
+		case 2:print_arcs(); break;
+		case 3:direct_path(); break;
+		case 4:
+		{
+			cout << "退出程序"; exit(1);
+		}
+		default:cout << "您的选择有误！" << endl;
+		}
+		system("pause");//程序暂停 
+		system("cls"); //清屏 
+	}
+}
+
+int main()
+{
+	int choose;
+	string pwd_correct="123456";
+	string pwd_input;
+	Creat_graph();
+	while (1)
+	{
+		cout << "           &欢迎使用公交查询系统&           " << endl;
+		cout << "********************************************" << endl;
+		cout << "*             &请选择您的身份&             *" << endl;
+		cout << "*------------------------------------------*" << endl;
+		cout << "*                 1.用户                   *" << endl;
+		cout << "*------------------------------------------*" << endl;
+		cout << "*                2.管理员                  *" << endl;
+		cout << "*------------------------------------------*" << endl;
+		cin >> choose;
+		if (choose == 1)
+			print_user();
+		else if (choose == 2)
+		{
+			cout << "*            请输入管理员密码            *" << endl;
+			cin >> pwd_input;
+			if (pwd_correct == pwd_input)
+				print_admin();
+			else
+			{
+				cout << "*      密码错误，即将退出程序     *" << endl;
+				Sleep(2000); exit(1);
+			}
+		}
+		else
+		{
+			cout << "*         输入有误，请重新输入        *" << endl;
+			Sleep(1500);
+			system("cls"); //清屏 
+			continue;
+		}
 	}
 	return 0;
 }

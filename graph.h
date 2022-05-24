@@ -49,6 +49,8 @@ int Locate_road(int j);
 
 void print_vex();
 void print_arcs();
+void print_user();
+void print_admin();
 
 void Create_vex();
 void Creat_arcs();
