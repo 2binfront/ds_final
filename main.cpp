@@ -72,7 +72,6 @@ void Creat_arcs()
 	G.arcs[6][8].adj[G.arcs[6][8].adj_loc++] = 3;
 	G.arcs[8][10].adj[G.arcs[8][10].adj_loc++] = 3;
 	G.arcs[10][1].adj[G.arcs[10][1].adj_loc++] = 3;
-
 	G.arcs[1][10].adj[G.arcs[1][10].adj_loc++] = 3;
 	G.arcs[10][8].adj[G.arcs[10][8].adj_loc++] = 3;
 	G.arcs[8][6].adj[G.arcs[8][6].adj_loc++] = 3;

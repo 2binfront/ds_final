@@ -11,8 +11,6 @@ using namespace std;
 extern graph G;
 extern int road[50];//记录公交路线号 
 extern int road_a;//记录公交路线数 
-
-
 extern bool visit[500];   //标志站点有没有被访问过	
 extern p P[500];        //换乘站点记录 
 extern int D[500];    //所在站点到其他站点的最短路程 
