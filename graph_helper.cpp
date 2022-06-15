@@ -9,32 +9,29 @@
 using namespace std;
 
 extern graph G;
-extern int road[50];//记录公交路线号 
-extern int road_a;//记录公交路线数 
-
-
-extern bool visit[500];   //标志站点有没有被访问过	
-extern p P[500];        //换乘站点记录  
-extern int D[500];    //所在站点到其他站点的最短路程 
+extern int subway[10];//记录地铁路线号 
+extern int subway_num;//记录地铁路线数 
+extern bool visit[100];   //标志站点有没有被访问过	
+extern station S[100];        //换乘站点记录  
+extern int min_length[100];    //所在站点到其他站点的最短路程 
 
 //判断顶点是否重复
-int vex_repeat(string& point)
+int vex_repeat(string& v)
 {
 	int i = 0;
-	for (i = 0; i < 500; i++)
+	for (i = 0; i < 100; i++)
 	{
-		if (point == G.vex[i])   //vex顶点 
+		if (v == G.vex[i])   //vex顶点 
 			return 0;
 	}
 	return 1;
 }
 
-
 //确定某个顶点 v 在图 G 中的位置
-int Locate_vex(string v)
+int locate_v(string v)
 {
 	int i;
-	for (i = 0; i < 500; i++)
+	for (i = 0; i < 100; i++)
 	{
 		if (G.vex[i] == v)//string定义中的汉字可以直接比较是否相等 
 			return i;
@@ -42,9 +39,8 @@ int Locate_vex(string v)
 	return -1;
 }
 
-
 //输出图G的顶点
-void print_vex()//显示站点 
+void print_v()//显示站点 
 {
 	for (int i = 0; i < G.vexnum; i++)
 	{
@@ -55,12 +51,12 @@ void print_vex()//显示站点
 
 //输出图G的邻接矩阵
 void print_arcs() {
-	static string** str = new string * [road_a];
-	for (int i = 0; i < road_a; i++)
+	static string** str = new string * [subway_num];
+	for (int i = 0; i < subway_num; i++)
 	{
 		str[i] = new string[G.vexnum];
 	}
-	for (int k = 0; k < road_a; k++)//线路号
+	for (int k = 0; k < subway_num; k++)//线路号
 	{
 		int a = 0;//某路线上的顶点排序下标
 		cout << k + 1 << "号线：";
@@ -68,9 +64,9 @@ void print_arcs() {
 		{
 			for (int j = 0; j < i; j++)//i之前的顶点
 			{
-				for (int c = 0; c < G.arcs[i][j].adj_loc; c++)//ij边经过的公交线路数量，矩阵的下三角
+				for (int count = 0; count < G.arcs[i][j].adj_loc; count++)//ij边经过的地铁线路数量，矩阵的下三角
 				{
-					if (G.arcs[i][j].adj[c] == road[k])//同一线路
+					if (G.arcs[i][j].adj[count] == subway[k])//同一线路
 					{
 						int flag = 0;
 						for (int h = 0; h < a; h++)
@@ -118,12 +114,12 @@ void print_arcs() {
 	}
 }
 
-//判断公交号是否已存在 
-int Locate_road(int j)
+//判断地铁号是否已存在 
+int locate_subway(int t)
 {
-	for (int i = 0; i < road_a; i++)
+	for (int i = 0; i < subway_num; i++)
 	{
-		if (road[i] == j)return 1;
+		if (subway[i] == t)return 1;
 	}
 	return -1;
 }

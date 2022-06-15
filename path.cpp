@@ -9,23 +9,23 @@
 using namespace std;
 
 extern graph G;
-extern int road[50];//记录公交路线号 
-extern int road_a;//记录公交路线数 
-extern bool visit[500];   //标志站点有没有被访问过	
-extern p P[500];        //换乘站点记录 
-extern int D[500];    //所在站点到其他站点的最短路程 
+extern int subway[10];//记录地铁路线号 
+extern int subway_num;//记录地铁路线数 
+extern bool visit[100];   //标志站点有没有被访问过	
+extern station S[100];        //换乘站点记录 
+extern int min_length[100];    //所在站点到其他站点的最短路程 
 
 //求直接线路
 void direct_path()
 {
-	//建立二维数组求出所有公交线路
-	//string str[3][12];//string str[road_a][G.vexnum];
-	static string** str = new string * [road_a];
-	for (int i = 0; i < road_a; i++)
+	//建立二维数组求出所有地铁线路
+	//string str[3][12];//string str[subway_num][G.vexnum];
+	static string** str = new string * [subway_num];
+	for (int i = 0; i < subway_num; i++)
 	{
 		str[i] = new string[G.vexnum];
 	}
-	for (int k = 0; k < road_a; k++)//线路号
+	for (int k = 0; k < subway_num; k++)//线路号
 	{
 		int a = 0;//某路线上的顶点排序下标
 		cout << k + 1 << "号线：";
@@ -33,9 +33,9 @@ void direct_path()
 		{
 			for (int j = 0; j < i; j++)//i之前的顶点
 			{
-				for (int c = 0; c < G.arcs[i][j].adj_loc; c++)//ij边经过的公交线路数量，矩阵的下三角
+				for (int count = 0; count < G.arcs[i][j].adj_loc; count++)//ij边经过的地铁线路数量，矩阵的下三角
 				{
-					if (G.arcs[i][j].adj[c] == road[k])//同一线路
+					if (G.arcs[i][j].adj[count] == subway[k])//同一线路
 					{
 						int flag = 0;
 						for (int h = 0; h < a; h++)
@@ -95,8 +95,17 @@ void direct_path()
 	cout << "请输入您的终点站：";
 	cin >> str3;
 
+	//输出	起始站点：str2	终点：str3
+	ofstream myout("地铁导航.text", ios::out | ios::app);
+	if (myout.is_open())
+	{
+		myout << "起始站: " << str2 << endl;
+		myout << "终点站: " << str3 << "\n" << endl;
+		myout.close();
+	}
+
 	//查找直达线路并作记录	
-	for (i = 0; i < road_a; i++)
+	for (i = 0; i < subway_num; i++)
 	{
 		flag1 = false;
 		flag2 = false;
@@ -115,56 +124,62 @@ void direct_path()
 				flag2 = true;
 			}
 		}
-
 		if ((flag1 == true) && (flag2 == true))//表示直达线路查找成功
 		{
 			flag = true;
 			cout << "该两站点之间存在直达线路" << endl;
-			cout << "该线路号为  " << i + 1 << "  号公交线路" << endl;
+			cout << "该线路号为  " << i + 1 << "  号地铁线路" << endl;
 		}
 	}
 	if (flag == false)
-		cout << "该两站点之间没有直达路线! 为您显示换乘公交路线!" << endl;
-	Indirect_path(str2, str3);
-	//return flag;     //若falg = false，表示没有直达路线
+	{
+		cout << "该两站点之间没有直达路线! 为您显示换乘地铁路线!" << endl;
+		Indirect_path(str2, str3);
+	}
+	//return flag;     //若flag = false，表示没有直达路线
 }
 
 //最优换乘路线（迪杰斯特拉算法） 
 void djc(int v0)
 {
-	int v, w;
+	int v, u;
 	for (v = 0; v < G.vexnum; v++)
 	{
 		visit[v] = false;
-		if (G.arcs[v0][v].adj_loc <= 0) D[v] = INFMAX;  //对D数组初始化 （最短路程记录数组） 
-		else D[v] = 1;//v与v0相邻且位于相同线路
-		/*for (w = 0; w < G.vexnum; w++)*/
-		P[v].vex_loc = 0;   //对P数组初始化（换乘记录数组） 
-		if (D[v] < INFMAX)
+		if (G.arcs[v0][v].adj_loc <= 0)
 		{
-			P[v].vex[++P[v].vex_loc] = v0; //v0到v点相邻时记录路径v0->v，且忽略P[v].vex[0]
-			P[v].vex[++P[v].vex_loc] = v;
+			min_length[v] = MAXROAD;
+		}  //对min_length数组初始化 （最短路程记录数组） 
+		else {
+			min_length[v] = 1;
+		}//v与v0相邻且位于相同线路
+		/*for (u = 0; u < G.vexnum; u++)*/
+		S[v].vex_loc = 0;   //对S数组初始化（换乘记录数组） 
+		if (min_length[v] < MAXROAD)
+		{
+			S[v].vex[++S[v].vex_loc] = v0; //v0到v点相邻时记录路径v0->v，且忽略S[v].vex[0]
+			S[v].vex[++S[v].vex_loc] = v;
 		}
 	}
-	D[v0] = 0;
+	min_length[v0] = 0;
 	visit[v0] = true;                    //v0为起点 
 	int i, min;                                    //min为到达未访问站点的最短路程 
 	for (i = 1; i < G.vexnum; i++)                   //计算起始站到所有站点的最短路径 
 	{
-		min = INFMAX;
-		for (w = 0; w < G.vexnum; w++)//首先找到D[]中的最短路径导向的站点v
+		min = MAXROAD;
+		for (u = 0; u < G.vexnum; u++)//首先找到min_length[]中的最短路径导向的站点v
 		{
-			if (!visit[w])
-				if (D[w] < min) { v = w; min = D[w]; }
+			if (!visit[u])
+				if (min_length[u] < min) { v = u; min = min_length[u]; }
 		}
 		visit[v] = true;
-		for (w = 0; w < G.vexnum; w++)
+		for (u = 0; u < G.vexnum; u++)
 		{
-			if (!visit[w] && G.arcs[v][w].adj_loc > 0 && min + 1 < D[w])
+			if (!visit[u] && G.arcs[v][u].adj_loc > 0 && min + 1 < min_length[u])
 			{
-				D[w] = D[v] + 1;
-				P[w] = P[v];//更新到w的最短路径的上一个顶点是v，并且继承到v的最短路径信息
-				P[w].vex[++P[w].vex_loc] = w;
+				min_length[u] = min_length[v] + 1;
+				S[u] = S[v];//更新到u的最短路径的上一个顶点是v，并且继承到v的最短路径信息
+				S[u].vex[++S[u].vex_loc] = u;
 			}
 		}
 	}
@@ -177,18 +192,14 @@ void Indirect_path(string str1, string str2)
 	int i;
 	int loc1, loc2;
 	//string str1, str2;
-	cout << "换乘公交路线显示：" << endl;
-	//cout << "请输入起始站点：";
-	//cin >> str1;
-	//cout << "请输入终点站：";
-	//cin >> str2;
-	loc1 = Locate_vex(str1);
-	loc2 = Locate_vex(str2);
+	cout << "换乘地铁路线显示：" << endl;
+	loc1 = locate_v(str1);
+	loc2 = locate_v(str2);
 	djc(loc1);
-	for (i = 2; i <= P[loc2].vex_loc; i++)
+	for (i = 2; i <= S[loc2].vex_loc; i++)
 	{
-		cout << "前往站点" << G.vex[P[loc2].vex[i]];
-		cout << "     公交路线号为" << G.arcs[P[loc2].vex[i - 1]][P[loc2].vex[i]].adj[0] << "号公交路线" << endl;
+		cout << "前往站点" << G.vex[S[loc2].vex[i]];
+		cout << "     地铁路线号为" << G.arcs[S[loc2].vex[i - 1]][S[loc2].vex[i]].adj[0] << "号地铁路线" << endl;
 	}
 	cout << endl;
 
