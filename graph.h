@@ -38,7 +38,7 @@ void Indirect_path(string str1, string str2);
 void djc(int v0);
 void direct_path();
 
-int vex_repeat(string& v);
+//int vex_repeat(string& v);
 int locate_v(string v);
 int locate_subway(int j);
 

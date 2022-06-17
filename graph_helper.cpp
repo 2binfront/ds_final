@@ -16,16 +16,16 @@ extern station S[100];        //换乘站点记录
 extern int min_length[100];    //所在站点到其他站点的最短路程 
 
 //判断顶点是否重复
-int vex_repeat(string& v)
-{
-	int i = 0;
-	for (i = 0; i < 100; i++)
-	{
-		if (v == G.vex[i])   //vex顶点 
-			return 0;
-	}
-	return 1;
-}
+//int vex_repeat(string& v)
+//{
+//	int i = 0;
+//	for (i = 0; i < 100; i++)
+//	{
+//		if (v == G.vex[i])   //vex顶点 
+//			return 0;
+//	}
+//	return 1;
+//}
 
 //确定某个顶点 v 在图 G 中的位置
 int locate_v(string v)
@@ -69,7 +69,7 @@ void print_arcs() {
 					if (G.arcs[i][j].adj[count] == subway[k])//同一线路
 					{
 						int flag = 0;
-						for (int h = 0; h < a; h++)
+						for (int h = 0; h < a; h++)//判断同线路之前是否已输出i,j结点
 						{
 							if (G.vex[i] == str[k][h])
 							{
