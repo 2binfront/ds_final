@@ -162,21 +162,26 @@ int modify_adj()
 	cin >> str2;
 	lint1 = locate_v(str1);
 	lint2 = locate_v(str2);               //找到这两个站点在矩阵中的位置
-	if (G.arcs[lint1][lint2].adj_loc)
-		cout << "该站点间已经存在的线路号是：";
-	int flag = 0;            //作为标记，检查这两站之间是否有线路相通
+
 	int i = 0, j = 0;
-	for (int i = 0; i < G.arcs[lint1][lint2].adj_loc; i++)
-		//输出两站点间已经存在的线路号
+	//判断两站点是否相邻且有接通线路，若有则打印出所有线路，否则退出
+	if (G.arcs[lint1][lint2].adj_loc) 
 	{
-		cout << G.arcs[lint1][lint2].adj[i] << "号 ";
-		flag = 1;
+		cout << "该站点间已经存在的线路号是：";
+		//int flag = 0;            //作为标记，检查这两站之间是否有线路相通
+		for (int i = 0; i < G.arcs[lint1][lint2].adj_loc; i++)
+			//输出两站点间已经存在的线路号
+		{
+			cout << G.arcs[lint1][lint2].adj[i] << "号 ";
+			//flag = 1;
+		}
 	}
-	if (flag == 0)
+	else
 	{
 		cout << "您输入的两站之间不存在线路，请您手动增加线路" << endl;
 		return 0;
 	}
+
 	cout << endl;
 	cout << "请输入想要改动的站点间的线路号" << endl;
 	cin >> line1;

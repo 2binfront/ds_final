@@ -96,7 +96,7 @@ void direct_path()
 	cin >> str3;
 
 	//输出	起始站点：str2	终点：str3
-	ofstream myout("地铁导航.text", ios::out | ios::app);
+	ofstream myout("地铁导航.txt", ios::out | ios::app);
 	if (myout.is_open())
 	{
 		myout << "起始站: " << str2 << endl;
